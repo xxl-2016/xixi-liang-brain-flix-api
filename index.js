@@ -1,11 +1,15 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
-const axios = require("axios");
+const cors = require("cors");
+const videoRoutes = require("./routes/videos");
+
+require("dotenv").config();
 const port = process.env.PORT || 3000;
-// const BrainFlixApi = require("../xixi-liang-brain-flix/src/api/BrainFlixApi.js");
-// const apiKey = process.env.API_KEY;
-// const brainFlixApi = new BrainFlixApi(apiKey);
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+app.use("/videos", videoRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
