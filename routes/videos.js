@@ -77,10 +77,11 @@ router.post("/:id/comments", (request, response) => {
       return response.status(500).send(err);
     }
     const videos = JSON.parse(data);
-    const video = videos.find((video) => video.id === request.params.id);
-    if (!video) {
+    const videoIndex = videos.findIndex((video) => video.id === request.params.id);
+    if (videoIndex === -1) {
       return response.status(404).send("Video not found");
     }
+    const video = videos[videoIndex];
     const newComment = {
       name: request.body.name,
       comment: request.body.comment,
@@ -89,6 +90,7 @@ router.post("/:id/comments", (request, response) => {
       timestamp: Date.now(),
     };
     video.comments.push(newComment);
+    videos[videoIndex] = video;
     writeFile("./data/video-details.json", videos, (err) => {
       if (err) {
         return response.status(500).send(err);
