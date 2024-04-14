@@ -2,6 +2,18 @@ const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 function readFile(file, callback) {
   fs.readFile(file, "utf8", callback);
@@ -42,7 +54,7 @@ router.get("/:id", (request, response) => {
   });
 });
 
-router.post("/", (request, response) => {
+router.post("/", upload.single("file"), (request, response) => {
   readFile("./data/video-details.json", (err, data) => {
     if (err) {
       return response.status(500).send(err);
